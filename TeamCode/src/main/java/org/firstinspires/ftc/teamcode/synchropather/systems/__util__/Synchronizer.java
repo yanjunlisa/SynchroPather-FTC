@@ -24,6 +24,11 @@ public class Synchronizer {
 	private double startTime;
 
 	/**
+	 * Whether or not the synchronizer is running.
+	 */
+	private boolean running;
+
+	/**
 	 * Creates a new Synchronizer object with the given Plans.
 	 * @param plans
 	 */
@@ -31,13 +36,31 @@ public class Synchronizer {
 		this.plans = plans;
 		this.runtime = new ElapsedTime(0);
 		this.startTime = 0;
+		this.running = false;
+	}
+
+	/**
+	 * Resets the elapsed time to zero and starts the timer.
+	 */
+	public void start() {
+		startTime = runtime.seconds();
+		running = true;
+	}
+
+	/**
+	 * Resets the elapsed time to the given elapsed time and immediately starts the timer.
+	 */
+	public void start(double elapsedTime) {
+		startTime = runtime.seconds() - elapsedTime;
+		running = true;
 	}
 
 	/**
 	 * Sets the target of all plans contained within this Synchronizer to the given elapsedTime and calls loop().
-	 * @return whether or not the synchronizer has finished.
+	 * @return whether or not the synchronizer is still running.
 	 */
 	public boolean update() {
+		if (running) throw new RuntimeException("Synchronizer: tried calling update() before calling start()!");
 		double elapsedTime = runtime.seconds() - startTime;
 		for (Plan plan : plans) {
 			plan.setTarget(elapsedTime);
@@ -47,26 +70,13 @@ public class Synchronizer {
 	}
 
 	/**
-	 * Resets the elapsed time to zero and starts the timer.
-	 */
-	public void start() {
-		startTime = runtime.seconds();
-	}
-
-	/**
-	 * Resets the elapsed time to the given elapsed time and immediately starts the timer.
-	 */
-	public void start(double elapsedTime) {
-		startTime = runtime.seconds() - elapsedTime;
-	}
-
-	/**
 	 * Stops every subsystem.
 	 */
 	public void stop() {
 		for (Plan plan : plans) {
 			plan.stop();
 		}
+		running = false;
 	}
 
 	/**
