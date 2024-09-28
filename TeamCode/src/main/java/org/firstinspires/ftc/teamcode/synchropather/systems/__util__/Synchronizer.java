@@ -48,6 +48,13 @@ public class Synchronizer {
 	}
 
 	/**
+	 * @return whether or not this synchronizer is running.
+	 */
+	public boolean getIsRunning() {
+		return running;
+	}
+
+	/**
 	 * Resets the elapsed time to the given elapsed time and immediately starts the timer.
 	 */
 	public void start(double elapsedTime) {
@@ -57,7 +64,7 @@ public class Synchronizer {
 
 	/**
 	 * Sets the target of all plans contained within this Synchronizer to the given elapsedTime and calls loop().
-	 * @return whether or not the synchronizer is still running.
+	 * @return whether or not the synchronizer should still be running.
 	 */
 	public boolean update() {
 		if (running) throw new RuntimeException("Synchronizer: tried calling update() before calling start()!");
@@ -70,7 +77,7 @@ public class Synchronizer {
 	}
 
 	/**
-	 * Stops every subsystem.
+	 * Stops every subsystem and sets running to false.
 	 */
 	public void stop() {
 		for (Plan plan : plans) {
