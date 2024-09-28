@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.synchropather.systems.rotation;
 
-
+import org.firstinspires.ftc.teamcode.synchropather.systems.MovementType;
 import org.firstinspires.ftc.teamcode.synchropather.systems.__util__.superclasses.RobotState;
 
 /**
@@ -17,7 +17,7 @@ public class RotationState extends RobotState {
 	 * @param heading radians
 	 */
 	public RotationState(double heading) {
-        this.heading = heading;
+		this.heading = heading;
 	    this.normalizedHeading = normalizeAngle(heading);
 	}
 
@@ -91,19 +91,14 @@ public class RotationState extends RobotState {
 	public String getDisplayName() {
 		return "Rotation";
 	}
-	
+
 	/**
-	 * Normalizes a given angle to [-pi,pi) radians.
-	 * @param degrees the given angle in radians.
+	 * Normalizes a given angle to (-pi,pi] radians.
+	 * @param radians the given angle in radians.
 	 * @return the normalized angle in radians.
 	 */
-	private double normalizeAngle(double degrees) {
-	    double angle = degrees;
-	    while (angle <= -Math.PI) //TODO: opMode.opModeIsActive() && 
-	        angle += 2*Math.PI;
-	    while (angle > Math.PI)
-	        angle -= 2*Math.PI;
-	    return angle;
+	private static double normalizeAngle(double radians) {
+		return (radians + Math.PI) % (2*Math.PI) - Math.PI;
 	}
 
 }

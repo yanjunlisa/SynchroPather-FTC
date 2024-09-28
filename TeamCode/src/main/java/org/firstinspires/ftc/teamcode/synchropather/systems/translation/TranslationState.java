@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.synchropather.systems.translation;
 
+import org.firstinspires.ftc.teamcode.synchropather.systems.MovementType;
 import org.firstinspires.ftc.teamcode.synchropather.systems.__util__.superclasses.RobotState;
 
 /**

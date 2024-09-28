@@ -11,42 +11,61 @@ import org.firstinspires.ftc.teamcode.synchropather.systems.__util__.superclasse
  */
 public class Synchronizer {
 
-	private ElapsedTime runtime;
 	private Plan[] plans;
-	
+
+	/**
+	 * The elapsed time that determines the state of every Plan.
+	 */
+	private ElapsedTime runtime;
+
+	/**
+	 * The time when the synchronizer started, in seconds.
+	 */
+	private double startTime;
+
 	/**
 	 * Creates a new Synchronizer object with the given Plans.
 	 * @param plans
 	 */
 	public Synchronizer(Plan... plans) {
 		this.plans = plans;
-		this.runtime = new ElapsedTime();
-		this.runtime.reset();
+		this.runtime = new ElapsedTime(0);
+		this.startTime = 0;
 	}
 
 	/**
-	 * Sets the current runtime to zero seconds.
+	 * Sets the target of all plans contained within this Synchronizer to the given elapsedTime and calls loop().
+	 * @return whether or not the synchronizer has finished.
 	 */
-	public void resetRuntime() {
-		runtime.reset();
-	}
-
-	/**
-	 * Advances the current target elapsedTime and sends control commands to all plans.
-	 */
-	public void loop() {
-		setTarget(runtime.seconds());
-		for (Plan plan : plans) {
-			plan.loop();
-		}
-	}
-
-	/**
-	 * Sets the target of all plans contained within this Synchronizer to the given elapsedTime.
-	 */
-	public void setTarget(double elapsedTime) {
+	public boolean update() {
+		double elapsedTime = runtime.seconds() - startTime;
 		for (Plan plan : plans) {
 			plan.setTarget(elapsedTime);
+			plan.loop();
+		}
+		return elapsedTime < getDuration();
+	}
+
+	/**
+	 * Resets the elapsed time to zero and starts the timer.
+	 */
+	public void start() {
+		startTime = runtime.seconds();
+	}
+
+	/**
+	 * Resets the elapsed time to the given elapsed time and immediately starts the timer.
+	 */
+	public void start(double elapsedTime) {
+		startTime = runtime.seconds() - elapsedTime;
+	}
+
+	/**
+	 * Stops every subsystem.
+	 */
+	public void stop() {
+		for (Plan plan : plans) {
+			plan.stop();
 		}
 	}
 
@@ -77,6 +96,22 @@ public class Synchronizer {
 		for (Plan plan : plans) {
 			if (plan.movementType == movementType) {
 				return plan.getVelocity(elapsedTime);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the acceleration RobotState at the given elapsedTime within the Plan of the given movementType.
+	 * @param movementType
+	 * @param elapsedTime
+	 * @return the indicated acceleration RobotState, or null if the Plan does not exist.
+	 */
+	@SuppressWarnings("unchecked")
+	public RobotState getAcceleration(MovementType movementType, double elapsedTime) {
+		for (Plan plan : plans) {
+			if (plan.movementType == movementType) {
+				return plan.getAcceleration(elapsedTime);
 			}
 		}
 		return null;

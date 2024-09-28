@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.synchropather.systems.translation;
 
-
 import org.firstinspires.ftc.teamcode.synchropather.DriveConstants;
 import org.firstinspires.ftc.teamcode.synchropather.systems.MovementType;
 import org.firstinspires.ftc.teamcode.synchropather.systems.__util__.TimeSpan;
@@ -64,8 +63,20 @@ public class LinearTranslation extends Movement {
 	public TranslationState getVelocity(double elapsedTime) {
 		double theta = end.minus(start).theta();
 		double speed = calculator.getVelocity(elapsedTime);
-		
+
 		// scaled velocity vector
+		return new TranslationState(speed, theta, true);
+	}
+
+	/**
+	 * @return the indicated acceleration TranslationState.
+	 */
+	@Override
+	public TranslationState getAcceleration(double elapsedTime) {
+		double theta = end.minus(start).theta();
+		double speed = calculator.getAcceleration(elapsedTime);
+
+		// scaled acceleration vector
 		return new TranslationState(speed, theta, true);
 	}
 	
