@@ -13,11 +13,7 @@ public enum MovementType {
 		/**
 		 * A Movement involving the global heading.
 		 */
-		ROTATION(),
-		/**
-		 * A Movement involving the global lift height.
-		 */
-		LIFT();
+		ROTATION();
 
 		MovementType() {};
 }
