@@ -4,10 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.synchropather.systems.__util__.Synchronizer;
 import org.firstinspires.ftc.teamcode.synchropather.systems.__util__.TimeSpan;
-import org.firstinspires.ftc.teamcode.synchropather.systems.rotation.LinearRotation;
+import org.firstinspires.ftc.teamcode.synchropather.systems.rotation.movements.LinearRotation;
 import org.firstinspires.ftc.teamcode.synchropather.systems.rotation.RotationPlan;
 import org.firstinspires.ftc.teamcode.synchropather.systems.rotation.RotationState;
-import org.firstinspires.ftc.teamcode.synchropather.systems.translation.CRSplineTranslation;
+import org.firstinspires.ftc.teamcode.synchropather.systems.translation.movements.CRSplineTranslation;
 import org.firstinspires.ftc.teamcode.synchropather.systems.translation.TranslationPlan;
 import org.firstinspires.ftc.teamcode.synchropather.systems.translation.TranslationState;
 
