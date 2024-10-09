@@ -67,13 +67,21 @@ public class Synchronizer {
 	 * @return whether or not the synchronizer should still be running.
 	 */
 	public boolean update() {
-		if (running) throw new RuntimeException("Synchronizer: tried calling update() before calling start()!");
+		if (!running) throw new RuntimeException("Synchronizer: tried calling update() before calling start()!");
 		double elapsedTime = runtime.seconds() - startTime;
 		for (Plan plan : plans) {
 			plan.setTarget(elapsedTime);
 			plan.loop();
 		}
 		return elapsedTime < getDuration();
+	}
+
+	/**
+	 * @return the current elapsed time if this Synchronizer is running.
+	 */
+	public double getElapsedTime() {
+		if (!running) throw new RuntimeException("Synchronizer: tried calling getElapsedTime() before calling start()!");
+		return runtime.seconds() - startTime;
 	}
 
 	/**
