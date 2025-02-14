@@ -1,7 +1,7 @@
-package org.firstinspires.ftc.teamcode.synchropather.systems.__util__.superclasses;
+package org.firstinspires.ftc.teamcode.synchropather.__util__.superclasses;
 
-import org.firstinspires.ftc.teamcode.synchropather.systems.MovementType;
-import org.firstinspires.ftc.teamcode.synchropather.systems.__util__.TimeSpan;
+import org.firstinspires.ftc.teamcode.synchropather.MovementType;
+import org.firstinspires.ftc.teamcode.synchropather.__util__.TimeSpan;
 
 /**
  * Object containing the motion plan of a single Movement with respect to elapsed time.
@@ -12,12 +12,12 @@ public abstract class Movement {
 	 * The duration of time this Movement is allotted for.
 	 */
 	protected TimeSpan timeSpan;
-	
+
 	/**
 	 * The type of this movement.
 	 */
 	public final MovementType movementType;
-	
+
 	/**
 	 * Creates a new Movement with the given MovementType and TimeSpan.
 	 * @param movementType
@@ -105,5 +105,25 @@ public abstract class Movement {
 	 * @return a String representing the class name of this Movement.
 	 */
 	public abstract String getDisplayName();
+
+	/**
+	 * @return this Movement's TimeSpan.
+	 */
+	public TimeSpan getTimeSpan() {
+		return timeSpan;
+	}
+
+	/**
+	 * Gets this Movement's TimeSpan cropped within the specified margins (in seconds).
+	 * @param trimStart the TimeSpan starts this number of seconds after this Movement's startTime.
+	 * @param trimEnd the TimeSpan ends this number of seconds before this Movement's endTime.
+	 * @return the trimmed TimeSpan.
+	 */
+	public TimeSpan getTrimmedTimeSpan(double trimStart, double trimEnd) {
+		return new TimeSpan(
+				getStartTime() + trimStart,
+				getEndTime() - trimEnd
+		);
+	}
 
 }

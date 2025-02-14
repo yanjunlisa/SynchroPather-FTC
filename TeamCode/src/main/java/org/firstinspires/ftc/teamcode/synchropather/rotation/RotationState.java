@@ -1,7 +1,8 @@
-package org.firstinspires.ftc.teamcode.synchropather.systems.rotation;
+package org.firstinspires.ftc.teamcode.synchropather.rotation;
 
-import org.firstinspires.ftc.teamcode.synchropather.systems.MovementType;
-import org.firstinspires.ftc.teamcode.synchropather.systems.__util__.superclasses.RobotState;
+import com.arcrobotics.ftclib.geometry.Pose2d;
+
+import org.firstinspires.ftc.teamcode.synchropather.__util__.superclasses.RobotState;
 
 /**
  * Object containing a the global heading value of a robot on the field.
@@ -19,6 +20,15 @@ public class RotationState extends RobotState {
 	public RotationState(double heading) {
 		this.heading = heading;
 	    this.normalizedHeading = normalizeAngle(heading);
+	}
+
+	/**
+	 * Creates a new RotationState object with given Pose2d.
+	 * @param pose
+	 */
+	public RotationState(Pose2d pose) {
+		this.heading = pose.getHeading();
+		this.normalizedHeading = normalizeAngle(heading);
 	}
 
 	/**
@@ -98,7 +108,9 @@ public class RotationState extends RobotState {
 	 * @return the normalized angle in radians.
 	 */
 	private static double normalizeAngle(double radians) {
-		return (radians + Math.PI) % (2*Math.PI) - Math.PI;
+		while (radians >= Math.PI) radians -= 2*Math.PI;
+		while (radians < -Math.PI) radians += 2*Math.PI;
+		return radians;
 	}
 
 }

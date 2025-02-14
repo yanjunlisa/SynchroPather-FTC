@@ -2,16 +2,15 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.synchropather.systems.__util__.Synchronizer;
-import org.firstinspires.ftc.teamcode.synchropather.systems.__util__.TimeSpan;
-import org.firstinspires.ftc.teamcode.synchropather.systems.rotation.movements.LinearRotation;
-import org.firstinspires.ftc.teamcode.synchropather.systems.rotation.RotationPlan;
-import org.firstinspires.ftc.teamcode.synchropather.systems.rotation.RotationState;
-import org.firstinspires.ftc.teamcode.synchropather.systems.translation.movements.CRSplineTranslation;
-import org.firstinspires.ftc.teamcode.synchropather.systems.translation.TranslationPlan;
-import org.firstinspires.ftc.teamcode.synchropather.systems.translation.TranslationState;
+import org.firstinspires.ftc.teamcode.synchropather.__util__.Synchronizer;
+import org.firstinspires.ftc.teamcode.synchropather.__util__.TimeSpan;
+import org.firstinspires.ftc.teamcode.synchropather.rotation.movements.LinearRotation;
+import org.firstinspires.ftc.teamcode.synchropather.rotation.RotationPlan;
+import org.firstinspires.ftc.teamcode.synchropather.rotation.RotationState;
+import org.firstinspires.ftc.teamcode.synchropather.translation.movements.CRSplineTranslation;
+import org.firstinspires.ftc.teamcode.synchropather.translation.TranslationPlan;
+import org.firstinspires.ftc.teamcode.synchropather.translation.TranslationState;
 
 @Autonomous(name="Example SynchroPather Auto")
 public class ExampleSynchroPatherAuto extends LinearOpMode {

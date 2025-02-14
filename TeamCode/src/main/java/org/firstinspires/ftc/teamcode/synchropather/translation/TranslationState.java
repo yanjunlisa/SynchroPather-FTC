@@ -1,7 +1,8 @@
-package org.firstinspires.ftc.teamcode.synchropather.systems.translation;
+package org.firstinspires.ftc.teamcode.synchropather.translation;
 
-import org.firstinspires.ftc.teamcode.synchropather.systems.MovementType;
-import org.firstinspires.ftc.teamcode.synchropather.systems.__util__.superclasses.RobotState;
+import com.arcrobotics.ftclib.geometry.Pose2d;
+
+import org.firstinspires.ftc.teamcode.synchropather.__util__.superclasses.RobotState;
 
 /**
  * Object containing a Cartesian coordinate pair representing the global translation of the robot on the field.
@@ -27,7 +28,7 @@ public class TranslationState extends RobotState {
 	    	this.y = theta;
 	    }
 	}
-	
+
 	/**
 	 * Creates a new TranslationState object with the given Cartesian coordinates.
 	 * @param x inches
@@ -35,7 +36,16 @@ public class TranslationState extends RobotState {
 	 */
 	public TranslationState(double x, double y) {
 		this.x = x;
-	    this.y = y;
+		this.y = y;
+	}
+
+	/**
+	 * Creates a new TranslationState object from the given Pose2d.
+	 * @param pose
+	 */
+	public TranslationState(Pose2d pose) {
+		this.x = pose.getX();
+		this.y = pose.getY();
 	}
 	
 	/**

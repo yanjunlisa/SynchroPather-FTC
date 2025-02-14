@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.synchropather.systems;
+package org.firstinspires.ftc.teamcode.synchropather;
 
 /**
  * The type of Movement.

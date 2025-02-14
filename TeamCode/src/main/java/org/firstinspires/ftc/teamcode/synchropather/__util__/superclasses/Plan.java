@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode.synchropather.systems.__util__.superclasses;
+package org.firstinspires.ftc.teamcode.synchropather.__util__.superclasses;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import org.firstinspires.ftc.teamcode.synchropather.systems.MovementType;
-import org.firstinspires.ftc.teamcode.synchropather.systems.__util__.TimeSpan;
+import org.firstinspires.ftc.teamcode.synchropather.MovementType;
+import org.firstinspires.ftc.teamcode.synchropather.__util__.TimeSpan;
 
 /**
  * Object containing a sequence of Movements for a single system.

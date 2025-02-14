@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode.synchropather.systems.__util__;
+package org.firstinspires.ftc.teamcode.synchropather.__util__;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.synchropather.systems.MovementType;
-import org.firstinspires.ftc.teamcode.synchropather.systems.__util__.superclasses.Plan;
-import org.firstinspires.ftc.teamcode.synchropather.systems.__util__.superclasses.RobotState;
+import org.firstinspires.ftc.teamcode.synchropather.MovementType;
+import org.firstinspires.ftc.teamcode.synchropather.__util__.superclasses.Plan;
+import org.firstinspires.ftc.teamcode.synchropather.__util__.superclasses.RobotState;
 
 /**
  * An object that contains other Plans for synchronizing robot subsystems.
@@ -95,6 +95,13 @@ public class Synchronizer {
 	}
 
 	/**
+	 * Set running to false.
+	 */
+	public void setRunningFalse() {
+		running = false;
+	}
+
+	/**
 	 * Gets the RobotState at the given elapsedTime within the Plan of the given movementType.
 	 * @param movementType
 	 * @param elapsedTime
@@ -108,6 +115,16 @@ public class Synchronizer {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Gets the RobotState at the current elapsed time within the Plan of the given movementType.
+	 * @param movementType
+	 * @return the indicated RobotState, or null if the Plan does not exist.
+	 */
+	public RobotState getState(MovementType movementType) {
+		double elapsedTime = runtime.seconds() - startTime;
+		return getState(movementType, elapsedTime);
 	}
 
 	/**
@@ -127,6 +144,16 @@ public class Synchronizer {
 	}
 
 	/**
+	 * Gets the velocity RobotState at the current elapsed time within the Plan of the given movementType.
+	 * @param movementType
+	 * @return the indicated velocity RobotState, or null if the Plan does not exist.
+	 */
+	public RobotState getVelocity(MovementType movementType) {
+		double elapsedTime = runtime.seconds() - startTime;
+		return getVelocity(movementType, elapsedTime);
+	}
+
+	/**
 	 * Gets the acceleration RobotState at the given elapsedTime within the Plan of the given movementType.
 	 * @param movementType
 	 * @param elapsedTime
@@ -140,6 +167,16 @@ public class Synchronizer {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Gets the acceleration RobotState at the current elapsed time within the Plan of the given movementType.
+	 * @param movementType
+	 * @return the indicated acceleration RobotState, or null if the Plan does not exist.
+	 */
+	public RobotState getAcceleration(MovementType movementType) {
+		double elapsedTime = runtime.seconds() - startTime;
+		return getAcceleration(movementType, elapsedTime);
 	}
 
 	/**

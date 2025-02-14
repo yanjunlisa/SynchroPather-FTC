@@ -1,12 +1,11 @@
-package org.firstinspires.ftc.teamcode.synchropather.systems.translation.movements;
+package org.firstinspires.ftc.teamcode.synchropather.translation.movements;
 
-import org.firstinspires.ftc.teamcode.synchropather.DriveConstants;
-import org.firstinspires.ftc.teamcode.synchropather.systems.MovementType;
-import org.firstinspires.ftc.teamcode.synchropather.systems.__util__.TimeSpan;
-import org.firstinspires.ftc.teamcode.synchropather.systems.__util__.calculators.StretchedDisplacementCalculator;
-import org.firstinspires.ftc.teamcode.synchropather.systems.__util__.superclasses.Movement;
-import org.firstinspires.ftc.teamcode.synchropather.systems.translation.TranslationConstants;
-import org.firstinspires.ftc.teamcode.synchropather.systems.translation.TranslationState;
+import org.firstinspires.ftc.teamcode.synchropather.MovementType;
+import org.firstinspires.ftc.teamcode.synchropather.__util__.TimeSpan;
+import org.firstinspires.ftc.teamcode.synchropather.__util__.motion_profiles.SymmetricMotionProfile1D;
+import org.firstinspires.ftc.teamcode.synchropather.__util__.superclasses.Movement;
+import org.firstinspires.ftc.teamcode.synchropather.translation.TranslationConstants;
+import org.firstinspires.ftc.teamcode.synchropather.translation.TranslationState;
 
 /**
  * Movement for planning a Catmull-Rom spline translation.
@@ -16,7 +15,7 @@ public class CRSplineTranslation extends Movement {
 	private double distance, minDuration;
 	private double[] partialProps;
 	private final TranslationState[] anchors;
-	private StretchedDisplacementCalculator calculator;
+	private SymmetricMotionProfile1D motionProfile;
 
 	/**
 	 * Creates a new CRSplineTranslation object with the given anchor TranslationStates allotted for the given TimeSpan.
@@ -60,7 +59,7 @@ public class CRSplineTranslation extends Movement {
 		double p_r = getLocalProportion(elapsedTime);
 		TranslationState derivative = getDerivative(n, p_r);
 
-		double speed = calculator.getVelocity(elapsedTime);
+		double speed = motionProfile.getVelocity(elapsedTime);
 		double theta = Math.atan2(derivative.getY(), derivative.getX());
 
 		return new TranslationState(speed, theta, true);
@@ -73,7 +72,7 @@ public class CRSplineTranslation extends Movement {
 		double p_r = getLocalProportion(elapsedTime);
 		TranslationState secondDerivative = getSecondDerivative(n, p_r);
 
-		double speed = calculator.getVelocity(elapsedTime);
+		double speed = motionProfile.getVelocity(elapsedTime);
 
 		return secondDerivative.times(speed);
 	}
@@ -227,10 +226,10 @@ public class CRSplineTranslation extends Movement {
 		return new TranslationState(
 				// X Unit Acceleration
 				(v*xpp - xp*(vx*xpp + vy*ypp)) /
-						(v*v),
+						(v*v*v),
 				// Y Unit Acceleration
 				(v*ypp - yp*(vx*xpp + vy*ypp)) /
-						(v*v)
+						(v*v*v)
 		);
 	}
 	
@@ -240,13 +239,27 @@ public class CRSplineTranslation extends Movement {
 	 * @return the index of the spline segment.
 	 */
 	public int getLocalSegment(double elapsedTime) {
-		double dx = calculator.getDisplacement(elapsedTime);
+		double dx = motionProfile.getDisplacement(elapsedTime);
 		double p_x = distance!=0 ? dx / distance : 0;
 		
 		int n = 0;
 		while (n+1 < partialProps.length && p_x >= partialProps[n+1]) n++;
 		
 		return n;
+	}
+
+	/**
+	 * Gets the elapsed time at each anchor point, relative to the global timeline.
+	 * @return the times in a double array.
+	 */
+	public double[] getSegmentTimes() {
+		double[] segmentTimes = new double[anchors.length];
+		segmentTimes[0] = timeSpan.getStartTime();
+		segmentTimes[anchors.length-1] = timeSpan.getEndTime();
+		for (int i = 1; i < partialProps.length; i++) {
+			segmentTimes[i] = timeSpan.getStartTime() + motionProfile.getElapsedTime(partialProps[i] * distance);
+		}
+		return segmentTimes;
 	}
 	
 	/**
@@ -255,7 +268,7 @@ public class CRSplineTranslation extends Movement {
 	 * @return the proportion of distance traveled.
 	 */
 	public double getLocalProportion(double elapsedTime) {
-		double dx = calculator.getDisplacement(elapsedTime);
+		double dx = motionProfile.getDisplacement(elapsedTime);
 		int n = getLocalSegment(elapsedTime);
 		
 		double delta_t = TranslationConstants.delta_t;
@@ -296,18 +309,17 @@ public class CRSplineTranslation extends Movement {
 			lengths[i] = length;
 		}
 
-		double MV = DriveConstants.MAX_VELOCITY;
-		double MA = DriveConstants.MAX_ACCELERATION;
+		double v_max = TranslationConstants.MAX_VELOCITY;
+		double a_max = TranslationConstants.MAX_ACCELERATION;
 
 		if (startTimeConstructor) {
-			minDuration = StretchedDisplacementCalculator.findMinDuration(distance, MV, MA);
-			timeSpan = new TimeSpan(startTime, startTime + minDuration);
+			motionProfile = new SymmetricMotionProfile1D(distance, startTime, v_max, a_max);
+			timeSpan = motionProfile.getTimeSpan();
+		} else {
+			motionProfile = new SymmetricMotionProfile1D(distance, timeSpan, v_max, a_max);
 		}
 
-		// create calculator object
-		calculator = new StretchedDisplacementCalculator(distance, timeSpan, MV, MA);
-
-		minDuration = calculator.getMinDuration();
+		minDuration = motionProfile.getMinDuration();
 		
 		// calculate partial props
 		double partialLength = 0;
