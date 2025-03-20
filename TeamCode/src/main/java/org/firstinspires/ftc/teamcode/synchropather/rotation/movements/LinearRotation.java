@@ -116,7 +116,7 @@ public class LinearRotation extends Movement {
 	private void init(boolean startTimeConstructor, double startTime) {
 		distance = end.minus(start).abs();
 
-		double v_max = RotationConstants.MAX_ANGULAR_VELOCITY;
+		double v_max = RotationConstants.MAX_PATHING_ANGULAR_VELOCITY;
 		double a_max = RotationConstants.MAX_ANGULAR_ACCELERATION;
 
 		if (startTimeConstructor) {

@@ -1,14 +1,21 @@
 package org.firstinspires.ftc.teamcode.synchropather.translation;
 
+import com.acmerobotics.dashboard.config.Config;
+
 /**
  * A static class used by Translation Movements to reference important kinematic and algorithmic tuning values.
  */
+@Config
 public class TranslationConstants {
 
     /**
-     *  Max velocity of the robot used for SynchroPather in in/s.
+     *  Max velocity of the robot in in/s.
      */
     public static double MAX_VELOCITY = 50;
+    /**
+     *  Max velocity of the robot used for SynchroPather in in/s.
+     */
+    public static double MAX_PATHING_VELOCITY = 0.9*MAX_VELOCITY;
     /**
      *  Max acceleration of the robot in in/s^2.
      */

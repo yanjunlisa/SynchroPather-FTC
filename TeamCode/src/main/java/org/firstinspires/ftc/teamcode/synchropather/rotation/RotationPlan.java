@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.synchropather.rotation;
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.firstinspires.ftc.teamcode.synchropather.MovementType;
 import org.firstinspires.ftc.teamcode.synchropather.__util__.superclasses.Movement;
 import org.firstinspires.ftc.teamcode.synchropather.__util__.superclasses.Plan;
@@ -7,6 +9,7 @@ import org.firstinspires.ftc.teamcode.synchropather.__util__.superclasses.Plan;
 /**
  * Object containing a sequence of Movements for rotational drive.
  */
+@Config
 public class RotationPlan extends Plan<RotationState> {
 
 	/**

@@ -309,7 +309,7 @@ public class CRSplineTranslation extends Movement {
 			lengths[i] = length;
 		}
 
-		double v_max = TranslationConstants.MAX_VELOCITY;
+		double v_max = TranslationConstants.MAX_PATHING_VELOCITY;
 		double a_max = TranslationConstants.MAX_ACCELERATION;
 
 		if (startTimeConstructor) {
