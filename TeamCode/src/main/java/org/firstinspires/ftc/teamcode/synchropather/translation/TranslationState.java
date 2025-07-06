@@ -10,11 +10,20 @@ import org.firstinspires.ftc.teamcode.synchropather.__util__.superclasses.RobotS
 public class TranslationState extends RobotState {
 
 	public static final TranslationState zero = new TranslationState(0,0);
+	/**
+	 * x value of Cartesian coordinate
+	 */
 	private final double x;
+
+	/**
+	 * y value of Cartesian coordinate
+	 */
 	private final double y;
 	
 	/**
 	 * Creates a new TranslationState object with the given polar coordinates.
+	 * If the inputs are for polar coordinates,
+	 * they are converted to x, y of Cartesian coordinates.
 	 * @param r inches
 	 * @param theta radians
 	 * @param polar set to true for polar coordinates, false for Cartesian coordinates

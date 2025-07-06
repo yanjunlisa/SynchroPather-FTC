@@ -166,4 +166,5 @@ public abstract class Plan<T extends RobotState> {
 		return movements.get(movements.size()-1).getEndTime();
 	}
 
+	public abstract String toString();
 }

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.synchropather.__util__;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.synchropather.MovementType;
 import org.firstinspires.ftc.teamcode.synchropather.__util__.superclasses.Plan;
 import org.firstinspires.ftc.teamcode.synchropather.__util__.superclasses.RobotState;
@@ -28,15 +29,18 @@ public class Synchronizer {
 	 */
 	private boolean running;
 
+	private final Telemetry telemtry;
+
 	/**
 	 * Creates a new Synchronizer object with the given Plans.
 	 * @param plans
 	 */
-	public Synchronizer(Plan... plans) {
+	public Synchronizer(Telemetry telemetry,Plan... plans) {
 		this.plans = plans;
 		this.runtime = new ElapsedTime(0);
 		this.startTime = 0;
 		this.running = false;
+		this.telemtry=telemetry;
 	}
 
 	/**
@@ -67,9 +71,11 @@ public class Synchronizer {
 	 * @return whether or not the synchronizer should still be running.
 	 */
 	public boolean update() {
-		if (!running) throw new RuntimeException("Synchronizer: tried calling update() before calling start()!");
+		if (!running) throw
+				new RuntimeException("Synchronizer: tried calling update() before calling start()!");
 		double elapsedTime = runtime.seconds() - startTime;
 		for (Plan plan : plans) {
+			telemtry.addData("Plan", plan.toString());
 			plan.setTarget(elapsedTime);
 			plan.loop();
 		}
@@ -188,6 +194,10 @@ public class Synchronizer {
 			max = Math.max(max, plan.getDuration());
 		}
 		return max;
+	}
+
+	public void periodic(){
+		telemtry.addData("Synchronizer","active");
 	}
 
 }

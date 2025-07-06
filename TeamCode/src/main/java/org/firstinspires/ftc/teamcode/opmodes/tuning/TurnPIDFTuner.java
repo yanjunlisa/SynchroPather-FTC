@@ -8,6 +8,9 @@ import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.DriveController.RobotDriveController;
+import org.firstinspires.ftc.teamcode.DriveController.RobotLocalization;
+import org.firstinspires.ftc.teamcode.summer.Robot;
 import org.firstinspires.ftc.teamcode.synchropather.MovementType;
 import org.firstinspires.ftc.teamcode.synchropather.__util__.Synchronizer;
 import org.firstinspires.ftc.teamcode.synchropather.rotation.RotationPlan;
@@ -22,9 +25,10 @@ public class TurnPIDFTuner extends LinearOpMode {
     //TODO: Make sure these are fully coded
     private RobotDriveController robotDriveController;
     private RobotLocalization robotLocalization;
-
+    private Robot robot;
     @Override
     public void runOpMode() throws InterruptedException {
+
         initSubsystems();
         initSynchronizer();
 
@@ -51,13 +55,14 @@ public class TurnPIDFTuner extends LinearOpMode {
 
     private void initSubsystems() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
+        boolean manul=false;
+        this.robot= new Robot(hardwareMap,manul,this, telemetry);
         //TODO: Init robotDriveController here
-        this.robotDriveController = ...
+        this.robotDriveController = robot.robotDriveController;
 
         //TODO: Init robotLocalization here
-        // Make sure your robot's start heading is 0 radians
-        this.robotLocalization = ...
+        // Make sure your robot's start heading is 0 radians?
+        this.robotLocalization = robot.robotLocalization;
 
     }
 
@@ -73,13 +78,14 @@ public class TurnPIDFTuner extends LinearOpMode {
                 new RotationState(Math.toRadians(180)),
                 new RotationState(0)
         );
+
         RotationPlan rotationPlan = new RotationPlan(robotDriveController, robotLocalization,
                 rot1,
                 rot2
         );
 
         this.synchronizer = new Synchronizer(
-                rotationPlan
+              telemetry,  rotationPlan
         );
 
     }

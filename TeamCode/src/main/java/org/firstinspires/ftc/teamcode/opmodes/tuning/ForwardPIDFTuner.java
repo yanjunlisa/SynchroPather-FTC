@@ -8,6 +8,9 @@ import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.DriveController.RobotDriveController;
+import org.firstinspires.ftc.teamcode.DriveController.RobotLocalization;
+import org.firstinspires.ftc.teamcode.summer.Robot;
 import org.firstinspires.ftc.teamcode.synchropather.MovementType;
 import org.firstinspires.ftc.teamcode.synchropather.__util__.Synchronizer;
 import org.firstinspires.ftc.teamcode.synchropather.translation.TranslationPlan;
@@ -22,20 +25,25 @@ public class ForwardPIDFTuner extends LinearOpMode {
     //TODO: Make sure these are fully coded
     private RobotDriveController robotDriveController;
     private RobotLocalization robotLocalization;
+    private Robot robot;
 
     @Override
     public void runOpMode() throws InterruptedException {
+
         initSubsystems();
         initSynchronizer();
 
         waitForStart();
 
         while (opModeIsActive()) {
+
+
             while (opModeIsActive() && !gamepad1.square) {
                 if (synchronizer.getIsRunning()) {
                     synchronizer.update();
                 }
             }
+
             initSynchronizer();
             synchronizer.start();
             while (opModeIsActive() && synchronizer.update()) {
@@ -52,12 +60,14 @@ public class ForwardPIDFTuner extends LinearOpMode {
     private void initSubsystems() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
+        boolean manul=false;
+        robot= new Robot(hardwareMap,manul,this, telemetry);
         //TODO: Init robotDriveController here
-        this.robotDriveController = ...
+        robotDriveController = robot.robotDriveController;
 
         //TODO: Init robotLocalization here
-        // Make sure your robot's starting position is (0,0)
-        this.robotLocalization = ...
+        // Make sure your robot's starting position is (0,0) ?
+        robotLocalization = robot.robotLocalization;
 
     }
 
@@ -73,13 +83,13 @@ public class ForwardPIDFTuner extends LinearOpMode {
                 new TranslationState(48, 0),
                 new TranslationState(0, 0)
         );
-        TranslationPlan translationPlan = new TranslationPlan(robotDriveController, robotLocalization,
-                line1,
-                line2
+        TranslationPlan translationPlan = new TranslationPlan(
+                robotDriveController,robotLocalization,
+                line1,line2
         );
 
         this.synchronizer = new Synchronizer(
-                translationPlan
+               telemetry,translationPlan
         );
 
     }
