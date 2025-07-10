@@ -45,7 +45,7 @@ public class Robot {
                 hardwareRobot.leftFront,
                 hardwareRobot.rightFront,
                 hardwareRobot.leftBack,
-                hardwareRobot.rightBack,manul,telemetry
+                hardwareRobot.rightBack,hardwareRobot.imu,manul,telemetry
         );
         //this.armDrive = new ArmSubsystem(hardwareRobot.elbow,
         //        hardwareRobot.elbowtwo, hardwareRobot.claw, hardwareRobot.clawrotation, telemetry);

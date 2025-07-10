@@ -2,13 +2,18 @@ package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.arcrobotics.ftclib.geometry.Pose2d;
+import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.DriveController.RobotDriveController;
 import org.firstinspires.ftc.teamcode.DriveController.RobotLocalization;
+import org.firstinspires.ftc.teamcode.opmodes.tuning.Drawing;
 import org.firstinspires.ftc.teamcode.summer.Robot;
+import org.firstinspires.ftc.teamcode.synchropather.MovementType;
 import org.firstinspires.ftc.teamcode.synchropather.__util__.Synchronizer;
 import org.firstinspires.ftc.teamcode.synchropather.__util__.TimeSpan;
 import org.firstinspires.ftc.teamcode.synchropather.rotation.movements.LinearRotation;
@@ -34,8 +39,6 @@ public class ExampleSynchroPatherAuto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        //this.robot= new Robot(hardwareMap,manul,this, telemetry);
-
         initSubsystems();
         initSynchronizer();
 
@@ -44,18 +47,28 @@ public class ExampleSynchroPatherAuto extends LinearOpMode {
         robot.periodic();
         telemetry.update();
 
-        synchronizer.start();
+       // synchronizer.start();
+        while (opModeIsActive()) {
+            synchronizer.start();
+            while (opModeIsActive() && synchronizer.update()) {
+                TelemetryPacket packet = new TelemetryPacket();
+                packet.fieldOverlay().setStroke("#3F51B5");
+                Drawing.drawRobot(packet.fieldOverlay(), robotLocalization.getPose());
+                TranslationState targetTranslation = (TranslationState) synchronizer.getState(MovementType.TRANSLATION);
+                Drawing.drawTargetPose(packet.fieldOverlay(), new Pose2d(targetTranslation.getX(), targetTranslation.getY(), new Rotation2d()));
+                FtcDashboard.getInstance().sendTelemetryPacket(packet);
+            }
+            //  synchronizer.stop();
+            //}
+        }/*
         while (opModeIsActive() && synchronizer.update()){
             if (synchronizer.getIsRunning()){
                 telemetry.addData("Synchronizer","Running");
                 telemetry.update();
             }
-        }
+        }*/
         synchronizer.stop();
-
-
     }
-
 
     private void initSubsystems() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -73,15 +86,16 @@ public class ExampleSynchroPatherAuto extends LinearOpMode {
     private void initSynchronizer() {
         // Translation plan
         CRSplineTranslation spline = new CRSplineTranslation(0,
-                new TranslationState(0, 24),
+                new TranslationState(0, 0),
                 new TranslationState(24, 0),
                 new TranslationState(0, -24),
                 new TranslationState(-24, 0),
-                new TranslationState(0, 24)
+                new TranslationState(0, 24),
+                new TranslationState(0,0)
         );
         TranslationPlan translationPlan = new TranslationPlan(robotDriveController,
                 robotLocalization,spline);
-
+        /*
         // Rotation plan
         LinearRotation rotation = new LinearRotation(new TimeSpan(0, spline.getEndTime()),
                 new RotationState(Math.toRadians(0)),
@@ -89,11 +103,11 @@ public class ExampleSynchroPatherAuto extends LinearOpMode {
         );
 
         RotationPlan rotationPlan = new RotationPlan(robotDriveController,robotLocalization,rotation);
-
+*/
         // Synchronizer
         this.synchronizer = new Synchronizer(
-                telemetry,translationPlan,
-                rotationPlan
+                telemetry,translationPlan
+            //    rotationPlan
         );
     }
 

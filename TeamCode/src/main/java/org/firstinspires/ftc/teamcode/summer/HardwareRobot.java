@@ -2,9 +2,12 @@ package org.firstinspires.ftc.teamcode.summer;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.Motor.Encoder;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
@@ -47,6 +50,8 @@ public class HardwareRobot {
      */
     public final MotorEx elbowtwo;
 
+    //public final BNO055IMU imu_1;
+    public final IMU imu;
     /**
      * a wrist servo
      */
@@ -65,6 +70,20 @@ public class HardwareRobot {
         rightFront = new MotorEx(hardwareMap,"rightFront",Motor.GoBILDA.RPM_312);
         leftBack = new MotorEx(hardwareMap,"leftBack",Motor.GoBILDA.RPM_312);
         rightBack = new MotorEx(hardwareMap,"rightBack",Motor.GoBILDA.RPM_312);
+
+        //internal imu for rev control hub 31-1595
+        /**
+        imu=hardwareMap.get(BNO055IMU.class, "imu 1");
+        BNO055IMU.Parameters parameters=new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        imu.initialize(parameters);
+        **/
+        imu = hardwareMap.get(IMU.class, "imu");
+        IMU.Parameters parameters= new IMU.Parameters(
+                new RevHubOrientationOnRobot(
+                        RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+        imu.initialize(parameters);
         //check rpm for elbow
         elbow = new MotorEx(hardwareMap, "Elbow", Motor.GoBILDA.RPM_30);
         elbowtwo = new MotorEx(hardwareMap, "elbowtwo", Motor.GoBILDA.RPM_30);

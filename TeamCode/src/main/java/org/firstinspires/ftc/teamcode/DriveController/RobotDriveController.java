@@ -4,8 +4,11 @@ import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.drivebase.RobotDrive;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.synchropather.DriveConstants;
 import org.firstinspires.ftc.teamcode.synchropather.rotation.RotationConstants;
 import org.firstinspires.ftc.teamcode.synchropather.translation.TranslationConstants;
@@ -18,11 +21,11 @@ public class RobotDriveController {
     /**
      * Speed Field for power
      */
-    public double driveSpeed;
+    public double driveTheta;
     /**
      * Theta Field for power (direction)
      */
-    public double driveTheta;
+    public double driveSpeed;
 
     /**
      * Velocity Field for power
@@ -48,6 +51,9 @@ public class RobotDriveController {
      * Right back motor/wheel
      */
     private final MotorEx rightBack;
+
+    //private BNO055IMU imu;
+    private IMU imu;
     /**
      * 4-wheeled Mecanum drive
      */
@@ -59,11 +65,13 @@ public class RobotDriveController {
     public RobotDriveController(MotorEx leftFront,
                                 MotorEx rightFront,
                                 MotorEx leftBack,
-                                MotorEx rightBack, boolean manual,Telemetry telemetry){
+                                MotorEx rightBack, IMU imu,
+                                boolean manual,Telemetry telemetry){
         this.leftFront = leftFront;
         this.rightFront = rightFront;
         this.leftBack = leftBack;
         this.rightBack = rightBack;
+        this.imu= imu;
         this.controller = new MecanumDrive(leftFront,rightFront,leftBack,rightBack);
         this.driveSpeed=0;
         this.driveTheta=0;
@@ -71,24 +79,27 @@ public class RobotDriveController {
         this.telemetry = telemetry;
         this.manual= manual;
         if (manual == true) {
-        setManualWheelMotor(this.rightBack, false);
-        setManualWheelMotor(this.rightFront, false);
-        setManualWheelMotor(this.leftBack, true);
-        setManualWheelMotor(this.leftFront, false);
+            setManualWheelMotor(this.rightBack, true);
+            setManualWheelMotor(this.rightFront, true);
+            setManualWheelMotor(this.leftBack, false);
+        //setManualWheelMotor(this.leftFront, false);
+            setManualWheelMotor(this.leftFront,true);
         }else{
-            setAutoWheelMotor(rightBack,false);
-            setAutoWheelMotor(rightFront,false);
-            setAutoWheelMotor(leftBack,true);
-            setAutoWheelMotor(leftFront,false);
+            setAutoWheelMotor(rightBack,true);
+            setAutoWheelMotor(rightFront,true);
+            setAutoWheelMotor(leftBack,false);
+            //setAutoWheelMotor(leftFront,false);
+            setAutoWheelMotor(leftFront,true);
         }
         //telemetry.addData("Robot Controller ","Initialized");
         //telemetry.update();
     }
 
+    /*
     public void changeInversions() {
         leftFront.setInverted(true);
         rightBack.setInverted(true);
-    }
+    }*/
 
     /**
      * Drives with directions based on robot pov.
@@ -117,10 +128,9 @@ public class RobotDriveController {
     }
     /**
      *
-     * setting of motor for wheel
+     * setting of motor for wheel, each is controlled by raw power from gamepad inputs
      * @param m motor of wheel
      */
-
     public void setManualWheelMotor(MotorEx m, boolean inv){
         //m.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //m.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -128,10 +138,33 @@ public class RobotDriveController {
         m.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         m.setInverted(inv);
     }
+
+    /**
+     * Prepare the robot for automatical driving, each motor is controlled by velocity inputs
+     * @param m
+     * @param inv
+     */
     public void setAutoWheelMotor(MotorEx m, boolean inv){
         m.setRunMode(Motor.RunMode.VelocityControl);
         m.setInverted(inv);
     }
+
+
+    /**
+     * Run the robot with raw inputs from the gamepad, for manual control
+     * @param forward
+     * @param strafe
+     * @param turn
+     */
+    public void controller_driveRobotCentric( double forward, double strafe, double turn){
+        controller.driveRobotCentric(forward,strafe,turn);
+    }
+
+    public void controller_driveFieldCentric(double forward,double strafe, double turn){
+        double heading=imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        controller.driveFieldCentric(forward, strafe, turn, heading);
+    }
+
     /**
      * Corrected driving with bias based on driver pov.
      *

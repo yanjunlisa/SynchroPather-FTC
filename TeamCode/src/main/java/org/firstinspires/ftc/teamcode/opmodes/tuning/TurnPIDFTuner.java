@@ -50,18 +50,23 @@ public class TurnPIDFTuner extends LinearOpMode {
                 Drawing.drawTargetPose(packet.fieldOverlay(), new Pose2d(0, 0, new Rotation2d(targetRotation.getHeading())));
                 FtcDashboard.getInstance().sendTelemetryPacket(packet);
             }
+            if (synchronizer.getIsRunning()){
+                telemetry.addData("Synchronizer","Running");
+                telemetry.update();
+            }
         }
     }
 
     private void initSubsystems() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        boolean manul=false;
-        this.robot= new Robot(hardwareMap,manul,this, telemetry);
+
+        this.robot= new Robot(hardwareMap,false,this, telemetry);
+
         //TODO: Init robotDriveController here
         this.robotDriveController = robot.robotDriveController;
 
         //TODO: Init robotLocalization here
-        // Make sure your robot's start heading is 0 radians?
+        // Make sure your robot's starting position is (0,0) ?
         this.robotLocalization = robot.robotLocalization;
 
     }

@@ -34,40 +34,38 @@ public class ForwardPIDFTuner extends LinearOpMode {
         initSynchronizer();
 
         waitForStart();
+        synchronizer.periodic();
+        robot.periodic();
+        telemetry.update();
 
         while (opModeIsActive()) {
-
-
-            while (opModeIsActive() && !gamepad1.square) {
-                if (synchronizer.getIsRunning()) {
-                    synchronizer.update();
+           // if (gamepad1.square) {
+                synchronizer.start();
+                while (opModeIsActive() && synchronizer.update()) {
+                    TelemetryPacket packet = new TelemetryPacket();
+                    packet.fieldOverlay().setStroke("#3F51B5");
+                    Drawing.drawRobot(packet.fieldOverlay(), robotLocalization.getPose());
+                    TranslationState targetTranslation = (TranslationState) synchronizer.getState(MovementType.TRANSLATION);
+                    Drawing.drawTargetPose(packet.fieldOverlay(), new Pose2d(targetTranslation.getX(), targetTranslation.getY(), new Rotation2d()));
+                    FtcDashboard.getInstance().sendTelemetryPacket(packet);
                 }
-            }
-
-            initSynchronizer();
-            synchronizer.start();
-            while (opModeIsActive() && synchronizer.update()) {
-                TelemetryPacket packet = new TelemetryPacket();
-                packet.fieldOverlay().setStroke("#3F51B5");
-                Drawing.drawRobot(packet.fieldOverlay(), robotLocalization.getPose());
-                TranslationState targetTranslation = (TranslationState) synchronizer.getState(MovementType.TRANSLATION);
-                Drawing.drawTargetPose(packet.fieldOverlay(), new Pose2d(targetTranslation.getX(), targetTranslation.getY(), new Rotation2d()));
-                FtcDashboard.getInstance().sendTelemetryPacket(packet);
-            }
+              //  synchronizer.stop();
+            //}
         }
+        synchronizer.stop();
+        sleep(20);
     }
-
     private void initSubsystems() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        boolean manul=false;
-        robot= new Robot(hardwareMap,manul,this, telemetry);
+        this.robot= new Robot(hardwareMap,false,this, telemetry);
+
         //TODO: Init robotDriveController here
-        robotDriveController = robot.robotDriveController;
+        this.robotDriveController = robot.robotDriveController;
 
         //TODO: Init robotLocalization here
         // Make sure your robot's starting position is (0,0) ?
-        robotLocalization = robot.robotLocalization;
+        this.robotLocalization = robot.robotLocalization;
 
     }
 
