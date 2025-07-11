@@ -76,7 +76,6 @@ public class SampleOrientationProcessor implements VisionProcessor {
         frame = input.clone();
         double scalingFactor = (double) 640 /frame.width();
 
-
         // Getting representative brightness of image
         Mat gray = new Mat(); // convert to hsv
         Imgproc.cvtColor(input, gray, Imgproc.COLOR_RGB2GRAY);
@@ -323,7 +322,6 @@ public class SampleOrientationProcessor implements VisionProcessor {
             tempSampleAngles.add(Math.toRadians(procAngle));
         }
         sampleAngles = tempSampleAngles;
-
 
         return input;
     }
