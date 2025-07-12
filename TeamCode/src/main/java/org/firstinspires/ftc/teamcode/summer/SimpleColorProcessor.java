@@ -27,7 +27,8 @@ public class SimpleColorProcessor implements VisionProcessor {
 
     private Mat frame;
     private List<Point> detectedCenter = new ArrayList<>();
-    public static volatile GeneralCameraController.SampleColor colorType = GeneralCameraController.SampleColor.YELLOW;
+    public static volatile GeneralCameraController.SampleColor colorType = GeneralCameraController.SampleColor.RED;
+
     public SimpleColorProcessor(){
 
     }
@@ -71,6 +72,7 @@ public class SimpleColorProcessor implements VisionProcessor {
         Imgproc.cvtColor(input, gray, Imgproc.COLOR_RGB2GRAY);
 
         //List of color ranges and colors form drawing
+        //Red - 0, Blue - 1, Yellow - 2
         Scalar[] lowers={lowerRedH,lowerBlue,lowerYellow};
         Scalar[] uppers={upperRedH, upperBlue, upperYellow};
         Scalar[] drawColors={new Scalar(0,0,255),//Red (BGR)
@@ -88,14 +90,16 @@ public class SimpleColorProcessor implements VisionProcessor {
             //Imgproc.drawContours(input,contours,-1,drawColors[i],2);
             for (MatOfPoint contour: contours){
                 Imgproc.drawContours(input,List.of(contour),-1,drawColors[i],2);
-                Moments moments=Imgproc.moments(contour);
-                if(moments.get_m00()!=0){
-                    double cx=moments.get_m10()/moments.get_m00();
-                    double cy=moments.get_m01()/moments.get_m00();
-                    Point center = new Point(cx,cy);
-                    detectedCenter.add(center);
-                    //draw the center
-                    Imgproc.circle(input,center,4,drawColors[i],-1);
+                if (i == colorType.ordinal()){
+                    Moments moments=Imgproc.moments(contour);
+                    if(moments.get_m00()!=0) {
+                        double cx = moments.get_m10() / moments.get_m00();
+                        double cy = moments.get_m01() / moments.get_m00();
+                        Point center = new Point(cx, cy);
+                        detectedCenter.add(center);
+                        //draw the center
+                        Imgproc.circle(input,center,4,drawColors[i],-1);
+                    }
                 }
             }
         }

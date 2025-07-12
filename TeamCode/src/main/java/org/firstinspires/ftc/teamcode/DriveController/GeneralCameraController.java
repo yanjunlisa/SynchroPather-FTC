@@ -15,9 +15,9 @@ import java.util.List;
 
 public class GeneralCameraController {
     public enum SampleColor {
-        YELLOW(),
+        RED(),
         BLUE(),
-        RED()
+        YELLOW()
     }
     private VisionPortal visionPortal;
     private VisionProcessor processor;
@@ -94,7 +94,6 @@ public class GeneralCameraController {
         return (centers!=null && !centers.isEmpty());
     }
 
-    @Override
     public void periodic(){
         if (processorEnabled == true) {
             telemetry.addData("Camera", "Enabled");

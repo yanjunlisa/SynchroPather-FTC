@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.summer.RobotLocalizationFourWheels;
  * with an external camera
  * press the gamepad button
  */
-@TeleOp(name="Example Manual Robot")
+@TeleOp(name="Example Robot's external camera")
 public class TestCamera extends LinearOpMode {
 
     private RobotDriveController robotDriveController;
@@ -62,8 +62,6 @@ public class TestCamera extends LinearOpMode {
                 else
                     telemetry.addData("Color","not found");
             }
-
-            telemetry.update();
 
             robot.periodic();
             telemetry.update();
