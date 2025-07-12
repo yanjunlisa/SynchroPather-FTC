@@ -132,7 +132,7 @@ public class OverheadCameraController {
     /**
      * @param color the sample color to detect
      */
-    public void setFilterColor(SampleOrientationProcessor.SampleColor color) {
+    public void setFilterColor(GeneralCameraController.SampleColor color) {
         if (!processorEnabled) return;
         processor.setFilterColor(color);
     }
