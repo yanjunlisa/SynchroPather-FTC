@@ -51,13 +51,13 @@ public class TestCamera extends LinearOpMode {
                 boolean found = cameraController.getColorDetected();
                 telemetry.addData("Detecting", "RED");
                 telemetry.addData("RED Detected", found ? "YES" : "NO");
+                telemetry.update();
 
-                found=false;
 
                 // Optionally, disable processor if you only want to detect on demand
                 cameraController.disableProcessor();
                 cameraController.clearDetectedCenter();
-                telemetry.update();
+                found=false;
             }
 
             lastButtonState = buttonPressed;
