@@ -4,8 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.DriveController.GeneralCameraController;
 import org.firstinspires.ftc.teamcode.DriveController.RobotDriveController;
 import org.firstinspires.ftc.teamcode.DriveController.RobotLocalization;
+import org.firstinspires.ftc.vision.VisionPortal;
 
 public class Robot {
     /**
@@ -18,6 +20,7 @@ public class Robot {
     //public final DriveSubsystem drive;
     public final RobotDriveController robotDriveController;
     public final RobotLocalization robotLocalization;
+
     /**
      * The arm drive
      */
@@ -26,7 +29,7 @@ public class Robot {
     /**
      * The drive for webcam
      */
-    //public final VisionSubsystem camDrive;
+    public final GeneralCameraController cameraController;
 /**
  * The inDep component of type indepSubsystem.
  */
@@ -50,7 +53,8 @@ public class Robot {
         //this.armDrive = new ArmSubsystem(hardwareRobot.elbow,
         //        hardwareRobot.elbowtwo, hardwareRobot.claw, hardwareRobot.clawrotation, telemetry);
 
-        //this.camDrive = new VisionSubsystem(hardwareRobot.webcamName, telemetry);
+        this.cameraController = new GeneralCameraController(hardwareRobot.webcamName, telemetry);
+
         this.robotLocalization = new RobotLocalizationFourWheels(hardwareRobot.leftFront,
                 hardwareRobot.rightFront, hardwareRobot.leftBack, hardwareRobot.rightBack, telemetry);
         /*
@@ -70,6 +74,7 @@ public class Robot {
         telemetry.addData("New Robot","Running");
         robotDriveController.periodic();
         robotLocalization.periodic();
+        cameraController.periodic();
        // telemetry.update();
     }
 }
