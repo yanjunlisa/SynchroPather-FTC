@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 
 import org.firstinspires.ftc.teamcode.summer.SampleOrientationProcessor;
+import org.firstinspires.ftc.teamcode.summer.SimpleColorProcessor;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 import java.util.ArrayList;
@@ -132,7 +133,7 @@ public class OverheadCameraController {
     /**
      * @param color the sample color to detect
      */
-    public void setFilterColor(GeneralCameraController.SampleColor color) {
+    public void setFilterColor(SimpleColorProcessor.SampleColor color) {
         if (!processorEnabled) return;
         processor.setFilterColor(color);
     }

@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.DriveController.RobotDriveController;
 import org.firstinspires.ftc.teamcode.DriveController.RobotLocalization;
 import org.firstinspires.ftc.teamcode.summer.Robot;
 import org.firstinspires.ftc.teamcode.summer.RobotLocalizationFourWheels;
+import org.firstinspires.ftc.teamcode.summer.SimpleColorProcessor;
 
 /**
  * This is the case showing how to test a color board in front of the robot
@@ -31,7 +32,7 @@ public class TestCamera extends LinearOpMode {
         robotLocalization = robot.robotLocalization;
         cameraController = robot.cameraController;
 
-        cameraController.setFilterColor(GeneralCameraController.SampleColor.RED);
+        cameraController.setFilterColor(SimpleColorProcessor.SampleColor.RED);
 
         waitForStart();
         robot.periodic();
@@ -41,17 +42,18 @@ public class TestCamera extends LinearOpMode {
         while(opModeIsActive()){
             //drive
 
-            telemetry.addLine("Ready to detect Color Red, press button A.");
+            telemetry.addLine("Ready to detect Color RED, press button A.");
             telemetry.update();
             boolean buttonPressed = this.gamepad1.a;
             if (buttonPressed && !lastButtonState){
                 cameraController.enableProcessor();
-                cameraController.setFilterColor(GeneralCameraController.SampleColor.RED);
+                cameraController.setFilterColor(SimpleColorProcessor.SampleColor.RED);
                 telemetry.addLine("Color detection ENABLED");
             }else if(!buttonPressed && lastButtonState){
                 cameraController.disableProcessor();
                 telemetry.addLine("Color detection disabled");
             }
+            telemetry.update();
             lastButtonState=buttonPressed;
 
             if (buttonPressed){
@@ -61,8 +63,10 @@ public class TestCamera extends LinearOpMode {
                     telemetry.addData("Color","found");
                 else
                     telemetry.addData("Color","not found");
-            }
 
+            }
+            sleep(100);
+            cameraController.clearDetectedCenter();
             robot.periodic();
             telemetry.update();
         };

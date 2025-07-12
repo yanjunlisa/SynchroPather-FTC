@@ -18,16 +18,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleColorProcessor implements VisionProcessor {
+    public static Scalar lowerWhite = new Scalar(0,0,200);
+    public static Scalar upperWhite = new Scalar(180,30,255);
     public static Scalar lowerYellow = new Scalar(15.0, 100.0, 160.0); // hsv
     public static Scalar upperYellow = new Scalar(30.0, 255.0, 255.0); // hsv
     public static Scalar lowerBlue = new Scalar(90.0, 80.0, 100.0); // hsv
     public static Scalar upperBlue = new Scalar(140.0, 255.0, 255.0); // hsv
     public static Scalar lowerRedH = new Scalar(10.0, 0.0, 0.0); // hsv
     public static Scalar upperRedH = new Scalar(160.0, 255.0, 255.0); // hsv
-
+    public enum SampleColor {
+        RED(),
+        BLUE(),
+        YELLOW(),
+        WHITE()
+    }
     private Mat frame;
     private List<Point> detectedCenter = new ArrayList<>();
-    public static volatile GeneralCameraController.SampleColor colorType = GeneralCameraController.SampleColor.RED;
+    public static volatile SampleColor colorType = SampleColor.RED;
 
     public SimpleColorProcessor(){
 
@@ -42,11 +49,11 @@ public class SimpleColorProcessor implements VisionProcessor {
 
     }
 
-    public synchronized void setFilterColor(GeneralCameraController.SampleColor color) {
+    public synchronized void setFilterColor(SampleColor color) {
         colorType = color;
     }
 
-    public GeneralCameraController.SampleColor getFilterColor(){
+    public SampleColor getFilterColor(){
         return colorType;
     }
 
@@ -72,41 +79,60 @@ public class SimpleColorProcessor implements VisionProcessor {
         Imgproc.cvtColor(input, gray, Imgproc.COLOR_RGB2GRAY);
 
         //List of color ranges and colors form drawing
-        //Red - 0, Blue - 1, Yellow - 2
-        Scalar[] lowers={lowerRedH,lowerBlue,lowerYellow};
-        Scalar[] uppers={upperRedH, upperBlue, upperYellow};
-        Scalar[] drawColors={new Scalar(0,0,255),//Red (BGR)
-                            new Scalar(255,0,0),//Blue (BGR)
-                            new Scalar(0,255,255)};   //Yellow (BGR)
-        for (int i=0; i< lowers.length; i++){
-            Mat mask = new Mat();
-            Core.inRange(gray,lowers[i],uppers[i],mask);
+        Scalar lower=null;
+        Scalar upper = null;
+        Scalar drawColor=null;
+        switch(colorType){
+            case RED:
+                lower=lowerRedH;
+                upper=upperRedH;
+                drawColor=new Scalar(0,0,255);
+                break;
+            case BLUE:
+                lower=lowerBlue;
+                upper=upperBlue;
+                drawColor=new Scalar(255,0,0);
+                break;
+            case YELLOW:
+                lower=lowerYellow;
+                upper=upperYellow;
+                drawColor=new Scalar(0,255,255);
+                break;
+            case WHITE:
+                lower=lowerWhite;
+                upper=upperWhite;
+                drawColor=new Scalar(255,255,255);
+                break;
+        }
+
+        Mat mask = new Mat();
+        Core.inRange(gray,lower,upper,mask);
 
             //Find contours
-            List<MatOfPoint> contours= new ArrayList<>();
-            Imgproc.findContours(mask,contours,new Mat(),Imgproc.RETR_EXTERNAL,Imgproc.CHAIN_APPROX_SIMPLE);
+        List<MatOfPoint> contours= new ArrayList<>();
+        Imgproc.findContours(mask,contours,new Mat(),Imgproc.RETR_EXTERNAL,Imgproc.CHAIN_APPROX_SIMPLE);
 
-            //Draw contours
-            //Imgproc.drawContours(input,contours,-1,drawColors[i],2);
-            for (MatOfPoint contour: contours){
-                Imgproc.drawContours(input,List.of(contour),-1,drawColors[i],2);
-                if (i == colorType.ordinal()){
-                    Moments moments=Imgproc.moments(contour);
-                    if(moments.get_m00()!=0) {
-                        double cx = moments.get_m10() / moments.get_m00();
-                        double cy = moments.get_m01() / moments.get_m00();
-                        Point center = new Point(cx, cy);
-                        detectedCenter.add(center);
+        //Draw contours
+        for (MatOfPoint contour: contours){
+            Imgproc.drawContours(input,List.of(contour),-1,drawColor,2);
+            Moments moments=Imgproc.moments(contour);
+            if(moments.get_m00()!=0) {
+                double cx = moments.get_m10() / moments.get_m00();
+                double cy = moments.get_m01() / moments.get_m00();
+                Point center = new Point(cx, cy);
+                detectedCenter.add(center);
                         //draw the center
-                        Imgproc.circle(input,center,4,drawColors[i],-1);
-                    }
-                }
+                Imgproc.circle(input,center,4,drawColor,-1);
             }
         }
         return input;//return the image with contours drawn
     }
 
     public List<Point> getDetectedCenter(){
-        return new ArrayList<>(detectedCenter);
+        return detectedCenter;
+    }
+
+    public void clearDetectedCenter(){
+        detectedCenter = new ArrayList<>();
     }
 }

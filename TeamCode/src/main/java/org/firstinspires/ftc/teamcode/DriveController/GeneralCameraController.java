@@ -14,11 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GeneralCameraController {
-    public enum SampleColor {
-        RED(),
-        BLUE(),
-        YELLOW()
-    }
+
     private VisionPortal visionPortal;
     private VisionProcessor processor;
     private boolean processorEnabled = false;
@@ -66,7 +62,7 @@ public class GeneralCameraController {
         processorEnabled = false;
     }
 
-    public void setFilterColor(SampleColor c){
+    public void setFilterColor(SimpleColorProcessor.SampleColor c){
         if (processor instanceof SampleOrientationProcessor){
             ((SampleOrientationProcessor) processor).setFilterColor(c);
         }else if (processor instanceof SimpleColorProcessor){
@@ -78,7 +74,6 @@ public class GeneralCameraController {
         if (processor instanceof SampleOrientationProcessor){
             return ((SampleOrientationProcessor)processor).getRealPositions();
         }
-
         return new ArrayList<>();
     }
 
@@ -91,7 +86,12 @@ public class GeneralCameraController {
 
     public boolean getColorDetected(){
         List<Point> centers= getDetectedCenters();
-        return (centers!=null && !centers.isEmpty());
+        boolean result = (centers!=null && !centers.isEmpty());
+        return result;
+    }
+
+    public void clearDetectedCenter(){
+        ((SimpleColorProcessor)processor).clearDetectedCenter();
     }
 
     public void periodic(){

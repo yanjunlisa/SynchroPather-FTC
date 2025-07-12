@@ -52,7 +52,7 @@ public class SampleOrientationProcessor implements VisionProcessor {
     private volatile ArrayList<double[]> realPositions = new ArrayList<>();
     private volatile ArrayList<Double> sampleAngles = new ArrayList<>();
 
-    public static volatile GeneralCameraController.SampleColor colorType = GeneralCameraController.SampleColor.YELLOW;
+    public static volatile SimpleColorProcessor.SampleColor colorType = SimpleColorProcessor.SampleColor.YELLOW;
 
 
     public static double horizontalBiasTune = 1.2;
@@ -96,9 +96,9 @@ public class SampleOrientationProcessor implements VisionProcessor {
         Mat hsv = new Mat(); // convert to hsv
         Imgproc.cvtColor(frame, hsv, Imgproc.COLOR_RGB2HSV);
         Mat inRange = new Mat();
-        if (colorType.equals(GeneralCameraController.SampleColor.BLUE)) {
+        if (colorType.equals(SimpleColorProcessor.SampleColor.BLUE)) {
             Core.inRange(hsv, lowerBlue, upperBlue, inRange);
-        } else if (colorType.equals(GeneralCameraController.SampleColor.RED)) {
+        } else if (colorType.equals(SimpleColorProcessor.SampleColor.RED)) {
             Mat inHRange = new Mat();
             Mat inSVRange = new Mat();
             Core.inRange(hsv, lowerRedH, upperRedH, inHRange);
@@ -334,11 +334,11 @@ public class SampleOrientationProcessor implements VisionProcessor {
         return sampleAngles;
     }
 
-    public synchronized void setFilterColor(GeneralCameraController.SampleColor color) {
+    public synchronized void setFilterColor(SimpleColorProcessor.SampleColor color) {
         colorType = color;
     }
 
-    public GeneralCameraController.SampleColor getFilterColor(){
+    public SimpleColorProcessor.SampleColor getFilterColor(){
         return colorType;
     }
     public static RotatedRect createRotatedRect(Point p, double theta, boolean shortSide) {
