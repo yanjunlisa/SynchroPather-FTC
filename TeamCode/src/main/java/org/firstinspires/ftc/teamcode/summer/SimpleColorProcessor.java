@@ -26,6 +26,10 @@ public class SimpleColorProcessor implements VisionProcessor {
     public static Scalar upperBlue = new Scalar(140.0, 255.0, 255.0); // hsv
     public static Scalar lowerRedH = new Scalar(10.0, 0.0, 0.0); // hsv
     public static Scalar upperRedH = new Scalar(160.0, 255.0, 255.0); // hsv
+    public static Scalar lowerRed1 = new Scalar(0, 100, 100);
+    public static Scalar upperRed1 = new Scalar(10, 255, 255);
+    public static Scalar lowerRed2 = new Scalar(160, 100, 100);
+    public static Scalar upperRed2 = new Scalar(180, 255, 255);
     public enum SampleColor {
         RED(),
         BLUE(),
@@ -75,8 +79,8 @@ public class SimpleColorProcessor implements VisionProcessor {
         detectedCenter.clear();
 
         // Getting representative brightness of image
-        Mat gray = new Mat(); // convert to hsv
-        Imgproc.cvtColor(input, gray, Imgproc.COLOR_RGB2GRAY);
+        Mat hsv = new Mat(); // convert to hsv
+        Imgproc.cvtColor(input, hsv, Imgproc.COLOR_RGB2HSV);
 
         //List of color ranges and colors form drawing
         Scalar lower=null;
@@ -105,12 +109,17 @@ public class SimpleColorProcessor implements VisionProcessor {
                 break;
         }
 
-        Mat mask = new Mat();
-        Core.inRange(gray,lower,upper,mask);
+        Mat mask1= new Mat();
+        Mat mask2 = new Mat();
+        //Core.inRange(hsv,lower,upper,mask);
+        Core.inRange(hsv, lowerRed1, upperRed1, mask1);
+        Core.inRange(hsv, lowerRed2, upperRed2, mask2);
+        Mat combinedMask = new Mat();
+        Core.addWeighted(mask1, 1.0, mask2, 1.0, 0.0, combinedMask);
 
             //Find contours
         List<MatOfPoint> contours= new ArrayList<>();
-        Imgproc.findContours(mask,contours,new Mat(),Imgproc.RETR_EXTERNAL,Imgproc.CHAIN_APPROX_SIMPLE);
+        Imgproc.findContours(combinedMask,contours,new Mat(),Imgproc.RETR_EXTERNAL,Imgproc.CHAIN_APPROX_SIMPLE);
 
         //Draw contours
         for (MatOfPoint contour: contours){

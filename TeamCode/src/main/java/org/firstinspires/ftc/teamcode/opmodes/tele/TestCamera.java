@@ -36,18 +36,18 @@ public class TestCamera extends LinearOpMode {
         telemetry.update();
 
         boolean lastButtonState = false;
-
+        cameraController.enableProcessor();
         while (opModeIsActive()) {
             boolean buttonPressed = this.gamepad1.a;
 
             // Detect rising edge: button was not pressed, now is pressed
             if (buttonPressed && !lastButtonState) {
                 // Enable camera and set to detect RED
-                cameraController.enableProcessor();
+                //cameraController.enableProcessor();
                 cameraController.clearDetectedCenter();
                 cameraController.setFilterColor(SimpleColorProcessor.SampleColor.RED);
 
-                sleep(100);
+                sleep(200);
                 // Run detection
                 boolean found = cameraController.getColorDetected();
                 telemetry.addData("Detecting", "RED");
@@ -56,7 +56,7 @@ public class TestCamera extends LinearOpMode {
 
 
                 // Optionally, disable processor if you only want to detect on demand
-                cameraController.disableProcessor();
+                //cameraController.disableProcessor();
                 cameraController.clearDetectedCenter();
                 found=false;
             }
