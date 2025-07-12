@@ -47,6 +47,7 @@ public class TestCamera extends LinearOpMode {
                 cameraController.clearDetectedCenter();
                 cameraController.setFilterColor(SimpleColorProcessor.SampleColor.RED);
 
+                sleep(100);
                 // Run detection
                 boolean found = cameraController.getColorDetected();
                 telemetry.addData("Detecting", "RED");
