@@ -48,6 +48,18 @@ public class SimpleColorProcessor implements VisionProcessor {
     public GeneralCameraController.SampleColor getFilterColor(){
         return colorType;
     }
+
+    /**
+     * This function is called through the visionPortal object automatically, if
+     * this SimpleColorProcessor object is attached to the visionPortal object, and
+     * the processor is enabled, and
+     * the camera stream run while the op mode is active.
+     *
+     * You do not call this function manually.
+     * @param input
+     * @param captureTimeNanos
+     * @return
+     */
     @Override
     public Object processFrame(Mat input, long captureTimeNanos){
         //convert input to HSV

@@ -28,8 +28,8 @@ import org.firstinspires.ftc.teamcode.synchropather.translation.movements.CRSpli
  * The drive controller drives the robot by raw power.
  * use the driveRobotCentric function of controller class to move the robot relative to itself.
  */
-@TeleOp(name="Example SynchroPather Manual")
-public class TestTeleOp extends LinearOpMode {
+@TeleOp(name="Example Manual Robot")
+public class TestTeleOp extends LinearOpMode{
 
     private RobotDriveController robotDriveController;
     private RobotLocalization robotLocalization;
