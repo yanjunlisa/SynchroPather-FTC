@@ -32,8 +32,6 @@ public class TestCamera extends LinearOpMode {
         robotLocalization = robot.robotLocalization;
         cameraController = robot.cameraController;
 
-        cameraController.setFilterColor(SimpleColorProcessor.SampleColor.RED);
-
         waitForStart();
         robot.periodic();
         telemetry.update();
