@@ -26,8 +26,7 @@ public class TestCamera extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        robot= new Robot(hardwareMap,false,this, telemetry);
-
+        robot = new Robot(hardwareMap, false, this, telemetry);
         robotDriveController = robot.robotDriveController;
         robotLocalization = robot.robotLocalization;
         cameraController = robot.cameraController;
@@ -37,41 +36,38 @@ public class TestCamera extends LinearOpMode {
         telemetry.update();
 
         boolean lastButtonState = false;
-        while(opModeIsActive()){
-            //drive
 
-            telemetry.addLine("Ready to detect Color RED, press button A.");
-            telemetry.update();
+        while (opModeIsActive()) {
             boolean buttonPressed = this.gamepad1.a;
-            if (buttonPressed && !lastButtonState){
+
+            // Detect rising edge: button was not pressed, now is pressed
+            if (buttonPressed && !lastButtonState) {
+                // Enable camera and set to detect RED
                 cameraController.enableProcessor();
+                cameraController.clearDetectedCenter();
                 cameraController.setFilterColor(SimpleColorProcessor.SampleColor.RED);
-                telemetry.addLine("Color detection ENABLED");
-            }else if(!buttonPressed && lastButtonState){
-                cameraController.disableProcessor();
-                telemetry.addLine("Color detection disabled");
-            }
-            telemetry.update();
-            lastButtonState=buttonPressed;
 
-            if (buttonPressed){
-                //only process color detection and show results when the button is held
+                // Run detection
                 boolean found = cameraController.getColorDetected();
-                if (found)
-                    telemetry.addData("Color","found");
-                else
-                    telemetry.addData("Color","not found");
+                telemetry.addData("Detecting", "RED");
+                telemetry.addData("RED Detected", found ? "YES" : "NO");
 
+                found=false;
+
+                // Optionally, disable processor if you only want to detect on demand
+                cameraController.disableProcessor();
+                cameraController.clearDetectedCenter();
+                telemetry.update();
             }
-            sleep(100);
-            cameraController.clearDetectedCenter();
-            robot.periodic();
-            telemetry.update();
-        };
-        cameraController.disableProcessor();
 
-        robot.periodic();
-        telemetry.update();
+            lastButtonState = buttonPressed;
+          //  robot.periodic();
+            sleep(50);
+        }
+        cameraController.disableProcessor();
+        //robot.periodic();
+        //telemetry.update();
+
     }
 
 }
