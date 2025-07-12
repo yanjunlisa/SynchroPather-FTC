@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
+import org.firstinspires.ftc.teamcode.DriveController.GeneralCameraController;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -27,11 +28,6 @@ import java.util.Set;
 
 @Config
 public class SampleOrientationProcessor implements VisionProcessor {
-    public enum SampleColor {
-        YELLOW(),
-        BLUE(),
-        RED()
-    }
 
     private Mat frame;
 
@@ -56,7 +52,7 @@ public class SampleOrientationProcessor implements VisionProcessor {
     private volatile ArrayList<double[]> realPositions = new ArrayList<>();
     private volatile ArrayList<Double> sampleAngles = new ArrayList<>();
 
-    public static volatile SampleColor colorType = SampleColor.YELLOW;
+    public static volatile GeneralCameraController.SampleColor colorType = GeneralCameraController.SampleColor.YELLOW;
 
 
     public static double horizontalBiasTune = 1.2;
@@ -100,9 +96,9 @@ public class SampleOrientationProcessor implements VisionProcessor {
         Mat hsv = new Mat(); // convert to hsv
         Imgproc.cvtColor(frame, hsv, Imgproc.COLOR_RGB2HSV);
         Mat inRange = new Mat();
-        if (colorType.equals(SampleColor.BLUE)) {
+        if (colorType.equals(GeneralCameraController.SampleColor.BLUE)) {
             Core.inRange(hsv, lowerBlue, upperBlue, inRange);
-        } else if (colorType.equals(SampleColor.RED)) {
+        } else if (colorType.equals(GeneralCameraController.SampleColor.RED)) {
             Mat inHRange = new Mat();
             Mat inSVRange = new Mat();
             Core.inRange(hsv, lowerRedH, upperRedH, inHRange);
@@ -338,10 +334,13 @@ public class SampleOrientationProcessor implements VisionProcessor {
         return sampleAngles;
     }
 
-    public synchronized void setFilterColor(SampleColor color) {
+    public synchronized void setFilterColor(GeneralCameraController.SampleColor color) {
         colorType = color;
     }
 
+    public GeneralCameraController.SampleColor getFilterColor(){
+        return colorType;
+    }
     public static RotatedRect createRotatedRect(Point p, double theta, boolean shortSide) {
         double halfSideLength;
         if (shortSide) halfSideLength = SAMPLE_LONG_LENGTH/2;

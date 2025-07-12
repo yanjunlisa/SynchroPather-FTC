@@ -4,12 +4,15 @@ import android.graphics.Canvas;
 import android.provider.ContactsContract;
 
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
+import org.firstinspires.ftc.teamcode.DriveController.GeneralCameraController;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.imgproc.Moments;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +26,8 @@ public class SimpleColorProcessor implements VisionProcessor {
     public static Scalar upperRedH = new Scalar(160.0, 255.0, 255.0); // hsv
 
     private Mat frame;
-
-
+    private List<Point> detectedCenter = new ArrayList<>();
+    public static volatile GeneralCameraController.SampleColor colorType = GeneralCameraController.SampleColor.YELLOW;
     public SimpleColorProcessor(){
 
     }
@@ -38,11 +41,18 @@ public class SimpleColorProcessor implements VisionProcessor {
 
     }
 
+    public synchronized void setFilterColor(GeneralCameraController.SampleColor color) {
+        colorType = color;
+    }
 
+    public GeneralCameraController.SampleColor getFilterColor(){
+        return colorType;
+    }
     @Override
     public Object processFrame(Mat input, long captureTimeNanos){
         //convert input to HSV
         frame = input.clone();
+        detectedCenter.clear();
 
         // Getting representative brightness of image
         Mat gray = new Mat(); // convert to hsv
@@ -63,8 +73,24 @@ public class SimpleColorProcessor implements VisionProcessor {
             Imgproc.findContours(mask,contours,new Mat(),Imgproc.RETR_EXTERNAL,Imgproc.CHAIN_APPROX_SIMPLE);
 
             //Draw contours
-            Imgproc.drawContours(input,contours,-1,drawColors[i],2);
+            //Imgproc.drawContours(input,contours,-1,drawColors[i],2);
+            for (MatOfPoint contour: contours){
+                Imgproc.drawContours(input,List.of(contour),-1,drawColors[i],2);
+                Moments moments=Imgproc.moments(contour);
+                if(moments.get_m00()!=0){
+                    double cx=moments.get_m10()/moments.get_m00();
+                    double cy=moments.get_m01()/moments.get_m00();
+                    Point center = new Point(cx,cy);
+                    detectedCenter.add(center);
+                    //draw the center
+                    Imgproc.circle(input,center,4,drawColors[i],-1);
+                }
+            }
         }
         return input;//return the image with contours drawn
+    }
+
+    public List<Point> getDetectedCenter(){
+        return new ArrayList<>(detectedCenter);
     }
 }
