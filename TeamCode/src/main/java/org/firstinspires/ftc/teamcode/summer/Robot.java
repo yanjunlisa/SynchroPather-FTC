@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.summer;
 
+import com.arcrobotics.ftclib.geometry.Pose2d;
+import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -48,15 +50,20 @@ public class Robot {
                 hardwareRobot.leftFront,
                 hardwareRobot.rightFront,
                 hardwareRobot.leftBack,
-                hardwareRobot.rightBack,hardwareRobot.imu,manul,telemetry
+                hardwareRobot.rightBack,//hardwareRobot.imu,
+                manul,telemetry
         );
         //this.armDrive = new ArmSubsystem(hardwareRobot.elbow,
         //        hardwareRobot.elbowtwo, hardwareRobot.claw, hardwareRobot.clawrotation, telemetry);
 
         this.cameraController = new GeneralCameraController(hardwareRobot.webcamName, telemetry);
 
-        this.robotLocalization = new RobotLocalizationFourWheels(hardwareRobot.leftFront,
-                hardwareRobot.rightFront, hardwareRobot.leftBack, hardwareRobot.rightBack, telemetry);
+        Pose2d initialPos = new Pose2d(0,0,new Rotation2d(0));
+        this.robotLocalization = new RobotLocalizationGoBildaPinpoint(initialPos,
+                hardwareRobot.Pinpoint,
+                opMode,telemetry);
+        //this.robotLocalization = new RobotLocalizationFourWheels(hardwareRobot.leftFront,
+         //       hardwareRobot.rightFront, hardwareRobot.leftBack, hardwareRobot.rightBack, telemetry);
         /*
         this.inDep = new indepSubsystem(
                 opMode,

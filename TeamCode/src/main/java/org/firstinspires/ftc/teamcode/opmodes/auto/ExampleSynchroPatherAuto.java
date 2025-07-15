@@ -38,7 +38,6 @@ public class ExampleSynchroPatherAuto extends LinearOpMode {
     }
     @Override
     public void runOpMode() throws InterruptedException {
-
         initSubsystems();
         initSynchronizer();
 

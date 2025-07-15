@@ -53,7 +53,7 @@ public class RobotDriveController {
     private final MotorEx rightBack;
 
     //private BNO055IMU imu;
-    private IMU imu;
+    //private IMU imu;
     /**
      * 4-wheeled Mecanum drive
      */
@@ -65,13 +65,13 @@ public class RobotDriveController {
     public RobotDriveController(MotorEx leftFront,
                                 MotorEx rightFront,
                                 MotorEx leftBack,
-                                MotorEx rightBack, IMU imu,
+                                MotorEx rightBack, //IMU imu,
                                 boolean manual,Telemetry telemetry){
         this.leftFront = leftFront;
         this.rightFront = rightFront;
         this.leftBack = leftBack;
         this.rightBack = rightBack;
-        this.imu= imu;
+        //this.imu= imu;
         this.controller = new MecanumDrive(leftFront,rightFront,leftBack,rightBack);
         this.driveSpeed=0;
         this.driveTheta=0;
@@ -160,10 +160,11 @@ public class RobotDriveController {
         controller.driveRobotCentric(forward,strafe,turn);
     }
 
+    /*
     public void controller_driveFieldCentric(double forward,double strafe, double turn){
         double heading=imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
         controller.driveFieldCentric(forward, strafe, turn, heading);
-    }
+    }*/
 
     /**
      * Corrected driving with bias based on driver pov.
@@ -273,6 +274,9 @@ public class RobotDriveController {
         controller.stop();
     }
 
+    //public IMU getImu() {
+    //    return imu;
+    //}
 
     public void periodic(){
         telemetry.addData("Drive","  here");

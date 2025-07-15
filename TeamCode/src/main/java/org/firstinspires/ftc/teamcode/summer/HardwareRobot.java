@@ -51,16 +51,17 @@ public class HardwareRobot {
     public final MotorEx elbowtwo;
 
     //public final BNO055IMU imu_1;
-    public final IMU imu;
+    //public final IMU imu;
     /**
      * a wrist servo
      */
-    public final ServoImplEx clawrotation;
+    //public final ServoImplEx clawrotation;
     /**
      * a webcam
      */
     public final WebcamName webcamName;
 
+    public final GoBildaPinpointDriver Pinpoint;
     public HardwareRobot(HardwareMap hardwareMap) {
 
         ////////////
@@ -78,12 +79,15 @@ public class HardwareRobot {
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
         **/
+        /**
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters= new IMU.Parameters(
                 new RevHubOrientationOnRobot(
                         RevHubOrientationOnRobot.LogoFacingDirection.UP,
                         RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
         imu.initialize(parameters);
+         **/
+        Pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
         //check rpm for elbow
         elbow = new MotorEx(hardwareMap, "Elbow", Motor.GoBILDA.RPM_30);
         elbowtwo = new MotorEx(hardwareMap, "elbowtwo", Motor.GoBILDA.RPM_30);
@@ -91,7 +95,7 @@ public class HardwareRobot {
         // SERVOS  //
         /////////////
         claw = hardwareMap.get(ServoImplEx.class, "Claw");
-        clawrotation = hardwareMap.get(ServoImplEx.class, "Rotation");
+        //clawrotation = hardwareMap.get(ServoImplEx.class, "Rotation");
 
         //for visionSubSystem
         webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");

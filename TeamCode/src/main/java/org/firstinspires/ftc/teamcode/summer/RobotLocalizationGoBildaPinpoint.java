@@ -123,6 +123,11 @@ public class RobotLocalizationGoBildaPinpoint extends RobotLocalization {
         this.telemetry.update();
     }
 
+    @Override
+    public Pose2d getPose(){
+        update();
+        return new Pose2d(x,y,new Rotation2d(heading));
+    }
 
     public void update() {
         predictKF();
